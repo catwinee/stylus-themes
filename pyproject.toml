@@ -1,7 +1,7 @@
 [project]
-name = "zhihu-reading"
+name = "personal-stylus"
 version = "1.0.0"
-description = "个人知乎 Stylus 样式：全站界面与专栏阅读布局"
+description = "按网站维护的个人 Stylus 样式与统一 JSON 导出"
 requires-python = ">=3.11"
 dependencies = []
 

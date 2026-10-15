@@ -1,0 +1,21 @@
+[
+  {
+    "key": "zhihu",
+    "name": "知乎阅读优化 · 整理版",
+    "enabled": true,
+    "sections": [
+      {
+        "source": "src/zhihu/global.css",
+        "domains": ["zhihu.com"]
+      },
+      {
+        "source": "src/zhihu/article.css",
+        "domains": ["zhuanlan.zhihu.com"]
+      },
+      {
+        "source": "src/zhihu/home.css",
+        "regexps": ["^https://www[.]zhihu[.]com/(?:follow/?|hot/?|ring-feeds/?|column-square/?)?(?:[?#].*)?$"]
+      }
+    ]
+  }
+]

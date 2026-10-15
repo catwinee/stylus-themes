@@ -5,14 +5,20 @@ import re
 from urllib.parse import urlsplit
 from pathlib import Path
 import subprocess
+import tempfile
 import unittest
+
+from scripts.build import build_styles
 
 import tinycss2
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
-BASELINE = json.loads((ROOT / "reference/original-styles.json").read_text())
-CURRENT = json.loads((ROOT / "dist/zhihu-reading.stylus.json").read_text())
+BASELINE = json.loads((ROOT / "reference/zhihu/original-styles.json").read_text())
+BUNDLE = json.loads((ROOT / "dist/stylus.json").read_text())
+MANIFEST = json.loads((ROOT / "styles.manifest.json").read_text())
+# 知乎回归按稳定名称查找，不依赖它在多站点 JSON 中的顺序。
+CURRENT = [next(style for style in BUNDLE if style["name"] == "知乎阅读优化 · 整理版")]
 
 
 def applies(section, address):
@@ -33,7 +39,11 @@ class StructureTests(unittest.TestCase):
         subprocess.run(["python3", "scripts/build.py", "--check"], cwd=ROOT, check=True)
 
     def test_import_shape_and_scopes(self):
-        self.assertEqual(len(CURRENT), 1)
+        self.assertEqual(len(BUNDLE), len(MANIFEST))
+        self.assertEqual([s["name"] for s in BUNDLE], [s["name"] for s in MANIFEST])
+        self.assertEqual(len({s["name"] for s in BUNDLE}), len(BUNDLE))
+        for entry in BUNDLE:
+            self.assertEqual(set(entry), {"name", "enabled", "sections"})
         style = CURRENT[0]
         self.assertEqual(set(style), {"name", "enabled", "sections"})
         self.assertTrue(style["enabled"])
@@ -63,7 +73,7 @@ class StructureTests(unittest.TestCase):
             self.assertFalse(applies(section, url), url)
 
     def test_css_syntax_and_no_duplicate_declarations(self):
-        for section in CURRENT[0]["sections"]:
+        for section in (s for style in BUNDLE for s in style["sections"]):
             seen = set()
             rules = tinycss2.parse_stylesheet(section["code"], skip_comments=True, skip_whitespace=True)
             for rule in rules:
@@ -78,19 +88,36 @@ class StructureTests(unittest.TestCase):
                         self.assertNotIn(key, seen, f"重复声明：{key}")
                         seen.add(key)
 
-    def test_mozilla_format_has_same_three_sections(self):
-        rules = tinycss2.parse_stylesheet((ROOT / "dist/zhihu-reading.css").read_text(),
-                                         skip_comments=False, skip_whitespace=True)
-        self.assertEqual(len(rules), 3)
-        for rule, section in zip(rules, CURRENT[0]["sections"]):
-            self.assertEqual(rule.type, "at-rule")
-            self.assertEqual(rule.lower_at_keyword, "-moz-document")
-            scope = "domains" if "domains" in section else "regexps"
-            function = "domain" if scope == "domains" else "regexp"
-            self.assertEqual(tinycss2.serialize(rule.prelude).strip(),
-                             f'{function}({json.dumps(section[scope][0])})')
-            normalize = lambda s: "".join(s.split())
-            self.assertEqual(normalize(tinycss2.serialize(rule.content)), normalize(section["code"]))
+    def test_bundle_is_deterministic_and_contains_exact_sources(self):
+        self.assertEqual(build_styles(), build_styles())
+        self.assertEqual(build_styles(), BUNDLE)
+        for style, entry in zip(BUNDLE, MANIFEST):
+            for section, item in zip(style["sections"], entry["sections"]):
+                self.assertEqual(section["code"], (ROOT / item["source"]).read_text().strip() + "\n")
+                self.assertEqual({k: v for k, v in section.items() if k != "code"},
+                                 {k: v for k, v in item.items() if k != "source"})
+
+    def test_builder_supports_multiple_sites_and_rejects_ambiguous_names(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            (root / "src").mkdir()
+            (root / "src/example.css").write_text("body { color: black; }\n")
+            manifest = [
+                {"key": key, "name": name, "enabled": True,
+                 "sections": [{"source": "src/example.css", "domains": [domain]}]}
+                for key, name, domain in (("a", "Site A", "a.example"), ("b", "Site B", "b.example"))
+            ]
+            path = root / "styles.manifest.json"
+            path.write_text(json.dumps(manifest))
+            result = build_styles(root)
+            self.assertEqual([s["name"] for s in result], ["Site A", "Site B"])
+            self.assertEqual(len(result), 2)
+            for style in result:
+                self.assertEqual(set(style), {"name", "enabled", "sections"})
+            manifest[1]["name"] = manifest[0]["name"]
+            path.write_text(json.dumps(manifest))
+            with self.assertRaises(ValueError):
+                build_styles(root)
 
 
 class FirefoxRegressionTests(unittest.TestCase):
