@@ -1,13 +1,13 @@
-# Personal Stylus
+# Stylus Themes
 
 个人网站样式仓库：按网站维护源码，用 Git 追踪，**统一生成一份 JSON，每次完整导入 Stylus 管理页**。
 
-仓库路径：`/home/Catwine/Workspace/stylus`。原 `zhihu-reading` 仓库已整体改名，Git 历史保留。
+仓库路径：`/home/Catwine/Workspace/stylus-themes`。原 `zhihu-reading` → `stylus` 仓库已整体改名，Git 历史保留。
 
 ## 唯一的导入文件
 
 ```text
-/home/Catwine/Workspace/stylus/dist/stylus.json
+/home/Catwine/Workspace/stylus-themes/dist/stylus.json
 ```
 
 每次更新后，在 **Stylus 管理页 → 备份 / Backup → 导入 / Import** 选择这个文件。不再需要粘贴 CSS，也不使用编辑器中的 Append / Overwrite。旧的 `dist/zhihu-reading.*` 导出已移除，避免导入过时文件。
@@ -94,7 +94,7 @@ pyproject.toml / uv.lock        测试依赖
 ## 构建与测试
 
 ```bash
-cd /home/Catwine/Workspace/stylus
+cd /home/Catwine/Workspace/stylus-themes
 python3 scripts/build.py
 python3 scripts/build.py --check
 uv sync --locked

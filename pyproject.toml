@@ -1,5 +1,5 @@
 [project]
-name = "personal-stylus"
+name = "stylus-themes"
 version = "1.0.0"
 description = "按网站维护的个人 Stylus 样式与统一 JSON 导出"
 requires-python = ">=3.11"
