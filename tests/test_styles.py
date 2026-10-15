@@ -196,10 +196,10 @@ class FirefoxRegressionTests(unittest.TestCase):
                     for key in ("composer", "ask", "expand", "feed-vote", "unknown-sidebar"):
                         self.assertNotEqual(s[key]["display"], "none", key)
                     self.assertEqual(s["unknown-layout"]["display"], "flex")
-                    self.assertEqual(s["feed-item"]["min-height"], "180px")
-                    self.assertEqual(s["feed-item"]["padding-top"], "28px")
-                    self.assertEqual(s["feed-item"]["padding-bottom"], "28px")
-                    self.assertGreaterEqual(s["feed-item"]["rect"][3], 180)
+                    # 不再用最小高度或留白制造空卡片；更多正文需另查摘要 DOM。
+                    self.assertEqual(s["feed-item"]["min-height"], "0px")
+                    self.assertEqual(s["feed-item"]["padding-top"], "0px")
+                    self.assertEqual(s["feed-item"]["padding-bottom"], "0px")
                     self.assertEqual(s["feed-item"]["max-height"], "none")
                     self.assertEqual(s["composer"]["padding-top"], "20px")
                     self.assertEqual(s["other-feed"]["padding-top"], "0px")

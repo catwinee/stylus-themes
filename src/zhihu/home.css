@@ -36,15 +36,3 @@
     background-color: #fff !important;
     box-shadow: 0 1px 6px rgba(18, 18, 18, 0.10) !important;
 }
-
-/* 4. 已确认的推荐内容项：Feed > div > div > ContentItem。
- * 加宽后摘要换行变少，用纵向留白和最小高度改善过扁的观感。
- * 180px 包含这里的上下 padding；Feed 外层原有留白另外保留。
- * 不设置固定 height / max-height / overflow，不截断展开内容。
- * 只处理包含 ContentItem 的 Feed，避免改到顶部发布区及其他模块。
- */
-.Topstory-container > .Topstory-mainColumn .Feed:has(.ContentItem) {
-    min-height: 180px !important;
-    padding-block: 28px !important;
-    box-sizing: border-box !important;
-}
