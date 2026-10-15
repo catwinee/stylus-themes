@@ -158,6 +158,7 @@ class FirefoxRegressionTests(unittest.TestCase):
                     const s = getComputedStyle(el);
                     const r = el.getBoundingClientRect();
                     const props = ['display', 'width', 'max-width', 'min-width',
+                        'min-height', 'max-height', 'padding-top', 'padding-bottom',
                         'margin-left', 'margin-right', 'padding-left', 'padding-right',
                         'column-gap', 'box-sizing', 'box-shadow', 'position', 'top',
                         'left', 'right', 'overflow', '--reading-width'];
@@ -195,6 +196,40 @@ class FirefoxRegressionTests(unittest.TestCase):
                     for key in ("composer", "ask", "expand", "feed-vote", "unknown-sidebar"):
                         self.assertNotEqual(s[key]["display"], "none", key)
                     self.assertEqual(s["unknown-layout"]["display"], "flex")
+                    self.assertEqual(s["feed-item"]["min-height"], "180px")
+                    self.assertEqual(s["feed-item"]["padding-top"], "28px")
+                    self.assertEqual(s["feed-item"]["padding-bottom"], "28px")
+                    self.assertGreaterEqual(s["feed-item"]["rect"][3], 180)
+                    self.assertEqual(s["feed-item"]["max-height"], "none")
+                    self.assertEqual(s["composer"]["padding-top"], "20px")
+                    self.assertEqual(s["other-feed"]["padding-top"], "0px")
+                    self.assertEqual(s["other-feed"]["min-height"], "0px")
+
+    def test_feed_grows_when_content_expands(self):
+        context = self.browser.new_context(viewport={"width": 1339, "height": 900})
+        context.route("**/*", lambda route: route.abort())
+        page = context.new_page()
+        try:
+            page.set_content((ROOT / "tests/home-fixture.html").read_text())
+            page.add_style_tag(content=css_for(CURRENT, "https://www.zhihu.com/"))
+            before = page.locator("#feed-item").bounding_box()["height"]
+            # 仅模拟内容增长，不声称验证了知乎实际的阅读全文脚本。
+            page.locator("#long-text").evaluate("""el => {
+                for (let i = 0; i < 30; i++) {
+                    const p = document.createElement('p');
+                    p.textContent = '展开后的长内容，用于验证自然增长而不是固定高度。';
+                    el.append(p);
+                }
+            }""")
+            page.locator("#expand").click()
+            after = page.locator("#feed-item").bounding_box()["height"]
+            self.assertGreater(after, before + 500)
+            self.assertEqual(page.locator("#feed-item").evaluate(
+                "el => getComputedStyle(el).overflow"), "visible")
+            page.locator("#expand").click()
+            self.assertAlmostEqual(page.locator("#feed-item").bounding_box()["height"], before)
+        finally:
+            context.close()
 
     def test_home_rules_do_not_leak_to_other_routes(self):
         old_only = [{**CURRENT[0], "sections": CURRENT[0]["sections"][:2]}]

@@ -23,7 +23,7 @@
 }
 
 /* 3. 信息流填满容器；统一外层留白和轻阴影。
- * 不猜测卡片内部结构，不修改摘要折叠、加载、交互按钮与 sticky 定位。
+ * 不修改摘要折叠、加载、交互按钮与 sticky 定位。
  * 白色底色对应当前已提供的浅色界面，深色主题尚未适配。
  */
 .Topstory-container > .Topstory-mainColumn {
@@ -35,4 +35,16 @@
     box-sizing: border-box !important;
     background-color: #fff !important;
     box-shadow: 0 1px 6px rgba(18, 18, 18, 0.10) !important;
+}
+
+/* 4. 已确认的推荐内容项：Feed > div > div > ContentItem。
+ * 加宽后摘要换行变少，用纵向留白和最小高度改善过扁的观感。
+ * 180px 包含这里的上下 padding；Feed 外层原有留白另外保留。
+ * 不设置固定 height / max-height / overflow，不截断展开内容。
+ * 只处理包含 ContentItem 的 Feed，避免改到顶部发布区及其他模块。
+ */
+.Topstory-container > .Topstory-mainColumn .Feed:has(.ContentItem) {
+    min-height: 180px !important;
+    padding-block: 28px !important;
+    box-sizing: border-box !important;
 }

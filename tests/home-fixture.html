@@ -9,12 +9,26 @@
   .css-bkewaf { width: 296px; max-width: 296px; flex-shrink: 0; }
   .Card, .feed-card { background: white; padding: 20px; margin-bottom: 10px; }
   .feed-card { border-bottom: 1px solid #eee; }
+  .Feed { padding: 0; }
+  .ContentItem-title { margin: 0; font-size: 20px; line-height: 29px; }
+  .feed-summary { margin: 8px 0; }
 </style>
 <main>
   <div id="feed-layout" class="Topstory-container css-1ewlo9z">
     <div id="feed-main" class="Topstory-mainColumn css-1ukigou">
       <div id="composer" class="Card">分享此刻的想法 <button id="ask">提问题</button></div>
-      <div class="feed-card"><h2>推荐内容</h2><p>信息流摘要文字。</p><button id="expand">阅读全文</button><button id="feed-vote">赞同</button></div>
+      <!-- Feed 及其内部祖先链来自用户输出；外层 feed-card 仅模拟既有留白。 -->
+      <div class="feed-card">
+        <div id="feed-item" class="Feed"><div><div>
+          <div class="ContentItem AnswerItem">
+            <h2 class="ContentItem-title"><div><a>推荐内容</a></div></h2>
+            <p class="feed-summary">信息流摘要文字。</p>
+            <details id="expanded-content"><summary id="expand">阅读全文</summary><div id="long-text"></div></details>
+            <button id="feed-vote">赞同</button>
+          </div>
+        </div></div></div>
+      </div>
+      <div id="other-feed" class="Feed">没有 ContentItem 的其他模块</div>
     </div>
     <div id="feed-sidebar" class="css-bkewaf">
       <a class="css-1qnu4lg"></a><div></div>
