@@ -1,0 +1,80 @@
+[
+  {
+    "name": "知乎 article",
+    "enabled": true,
+    "sections": [
+      {
+        "code": "/*\n      * 阅读区域总宽度，包含正文两侧内边距。\n      * 可以改成 900px、960px、1050px。\n      */\n.Post-content {\n    --reading-width: 1000px;\n}\n\n/* 1. 双栏容器改成单栏，并在页面中居中 */\n.Post-content .css-kjzwqj {\n    display: block !important;\n    width: calc(100% - 32px) !important;\n    max-width: var(--reading-width) !important;\n    min-width: 0 !important;\n    margin-inline: auto !important;\n    box-sizing: border-box !important;\n}\n\n/* 2. 隐藏整个右栏：侧栏作者卡与热榜\n           标题下方的作者信息不在这里，不会被隐藏 */\n.Post-content .css-kjzwqj > .css-1ni4jcm {\n    display: none !important;\n}\n\n/* 3. 放开正文外面两层原本约 694px 的容器 */\n.Post-content .css-kjzwqj > .css-c0fani,\n.Post-content .css-kjzwqj > .css-c0fani > .css-yq5nsh {\n    width: 100% !important;\n    max-width: none !important;\n    min-width: 0 !important;\n    box-sizing: border-box !important;\n}\n\n/* 4. 正文跟随父容器加宽，不再固定在约 654px */\n.Post-content .Post-Main,\n.Post-content .Post-RichTextContainer,\n.Post-content .Post-RichTextContainer > .css-1od93p9,\n.Post-content .Post-RichText {\n    width: 100% !important;\n    max-width: none !important;\n    min-width: 0 !important;\n    box-sizing: border-box !important;\n}\n\n.Post-content .Post-Main {\n    margin-inline: auto !important;\n}",
+        "domains": [
+          "zhuanlan.zhihu.com"
+        ]
+      },
+      {
+        "code": "/* 阅读区域从 1000px 加宽到 1100px */\n.Post-content {\n    --reading-width: 1100px;\n}\n\n/* 仅隐藏看山入口，保留返回顶部等其他按钮 */\n.CornerButtons--kanshan,\n.CornerAnimayedFlex--kanshan,\n.KanshanCornerButton {\n    display: none !important;\n}",
+        "domains": [
+          "zhuanlan.zhihu.com"
+        ]
+      },
+      {
+        "code": "/* 隐藏搜索框旁的直答入口 */\n.AppHeader .SearchBar > a.css-so42cc {\n    display: none !important;\n}",
+        "domains": [
+          "zhuanlan.zhihu.com"
+        ]
+      },
+      {
+        "code": "/* 顶部：AI Works */\n.AppHeader nav a[href=\"https://www.zhihu.com/project-square\"] {\n    display: none !important;\n}\n\n/* 顶部：故事 */\n.AppHeader nav a[href=\"https://www.zhihu.com/fiore/h5/vip-web\"] {\n    display: none !important;\n}\n\n/* 文章操作栏：解释这篇内容 */\n.Post-Main .ContentItem-actions button[data-tooltip=\"解释这篇内容\"] {\n    display: none !important;\n}",
+        "domains": [
+          "zhuanlan.zhihu.com"
+        ]
+      },
+      {
+        "code": "/* 搜索栏与右侧 + 按钮之间留白 */\n.AppHeader .SearchBar {\n    margin-inline-end: 16px !important;\n}",
+        "domains": [
+          "zhuanlan.zhihu.com"
+        ]
+      },
+      {
+        "code": "/* 撤销上次没有达到预期效果的外边距 */\n.AppHeader .SearchBar {\n    margin-inline-end: 0 !important;\n}\n\n/* 在搜索区域内部的横向子元素之间留白 */\n.AppHeader .SearchBar,\n.AppHeader .css-x84wzl {\n    column-gap: 16px !important;\n}",
+        "domains": [
+          "zhuanlan.zhihu.com"
+        ]
+      },
+      {
+        "code": "/* 搜索框填满可用空间，不再限宽并靠右 */\n.AppHeader .SearchBar-input {\n    width: 100% !important;\n    max-width: none !important;\n    min-width: 0 !important;\n    margin-inline: 0 !important;\n    box-sizing: border-box !important;\n}\n\n/* 搜索区域与左侧导航分隔线留出间隔 */\n.AppHeader .css-x84wzl {\n    padding-inline-start: 16px !important;\n    min-width: 0 !important;\n    box-sizing: border-box !important;\n}\n\n/* 窄窗口下允许搜索框收缩 */\n.AppHeader .SearchBar,\n.AppHeader .SearchBar-tool {\n    min-width: 0 !important;\n}",
+        "domains": [
+          "zhuanlan.zhihu.com"
+        ]
+      },
+      {
+        "code": "/* 扩大整体阅读区域 */\n.Post-content {\n    --reading-width: 1200px;\n}\n\n/* 增加白色正文容器的左右内边距 */\n.Post-content .css-kjzwqj > .css-c0fani > .css-yq5nsh {\n    padding-inline: clamp(24px, 5vw, 64px) !important;\n    box-sizing: border-box !important;\n}",
+        "domains": [
+          "zhuanlan.zhihu.com"
+        ]
+      },
+      {
+        "code": "/* 目录宽 76px，再与正文保持 16px 间隔 */\n.Post-content .css-1kerlqf:has(.Catalog) {\n    left: -92px !important;\n    right: auto !important;\n    width: 76px !important;\n}",
+        "domains": [
+          "zhuanlan.zhihu.com"
+        ]
+      },
+      {
+        "code": "/* 整块正文卡片的轻阴影 */\n     .Post-content .css-kjzwqj > .css-c0fani > .css-yq5nsh {\n       box-shadow: 0 1px 6px rgba(18, 18, 18, 0.10) !important;\n     }",
+        "domains": [
+          "zhuanlan.zhihu.com"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "知乎全站优化",
+    "enabled": true,
+    "sections": [
+      {
+        "code": "/* 顶部导航：AI Works、故事 */\n     .AppHeader nav a[href=\"https://www.zhihu.com/project-square\"],\n     .AppHeader nav a[href=\"/project-square\"],\n     .AppHeader nav a[href=\"https://www.zhihu.com/fiore/h5/vip-web\"],\n     .AppHeader nav a[href=\"/fiore/h5/vip-web\"] {\n       display: none !important;\n     }\n\n     /* 搜索框旁的直答 */\n     .AppHeader .SearchBar > a.css-so42cc {\n       display: none !important;\n     }\n\n     /* 看山入口 */\n     .CornerButtons--kanshan,\n     .CornerAnimayedFlex--kanshan,\n     .KanshanCornerButton {\n       display: none !important;\n     }\n\n     /* 搜索框填满可用宽度 */\n     .AppHeader .SearchBar-input {\n       width: 100% !important;\n       max-width: none !important;\n       min-width: 0 !important;\n       margin-inline: 0 !important;\n       box-sizing: border-box !important;\n     }\n\n     /* 搜索框与右侧按钮的间隔 */\n     .AppHeader .SearchBar {\n       margin-inline-end: 0 !important;\n       min-width: 0 !important;\n       column-gap: 16px !important;\n     }\n\n     /* 搜索区域与左侧导航的间隔 */\n     .AppHeader .css-x84wzl {\n       padding-inline-start: 16px !important;\n       min-width: 0 !important;\n       column-gap: 16px !important;\n       box-sizing: border-box !important;\n     }\n\n     .AppHeader .SearchBar-tool {\n       min-width: 0 !important;\n     }\n\n     /* 内容操作栏：解释入口 */\n     .ContentItem-actions button[data-tooltip=\"解释这篇内容\"] {\n       display: none !important;\n     }",
+        "domains": [
+          "zhihu.com"
+        ]
+      }
+    ]
+  }
+]

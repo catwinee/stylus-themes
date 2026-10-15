@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<title>离线布局回归夹具（不是真实知乎页面）</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #f5f6fa; }
+  .AppHeader, .css-51utkw, nav, .SearchBar, .css-x84wzl { display: flex; }
+  .AppHeader { padding: 0 20px; }
+  nav { flex: 0 0 auto; gap: 12px; }
+  .css-51utkw { width: 100%; }
+  .css-x84wzl { flex: 1 1 0%; justify-content: flex-end; }
+  .SearchBar { flex: 1 1 auto; }
+  .SearchBar-tool { flex: 1 1 auto; }
+  .SearchBar-input { display: flex; width: 365px; max-width: 365px; margin-left: auto; padding: 4px 0 4px 16px; }
+  .SearchBar-input input { min-width: 0; flex: 1; }
+  .SearchBar > a, .SearchBar > button { flex: 0 0 auto; }
+  .css-kjzwqj { display: flex; width: 1032px; margin: auto; padding: 0 16px; gap: 10px; }
+  .css-c0fani, .css-yq5nsh { width: 694px; }
+  .css-yq5nsh { padding: 20px; background: white; }
+  .Post-Main, .Post-RichTextContainer, .css-1od93p9 { width: 654px; }
+  .Post-Main { position: relative; }
+  .css-1ni4jcm { flex: 0 0 auto; width: 296px; max-width: 296px; }
+  .css-1kerlqf { position: absolute; width: 76px; left: -20px; right: -56px; top: 60px; }
+  .css-lcgmxk { position: sticky; top: 132px; }
+</style>
+<header class="AppHeader">
+  <div class="css-51utkw">
+    <nav>
+      <a id="follow" href="https://www.zhihu.com/follow">关注</a>
+      <a id="ring" href="https://www.zhihu.com/ring-feeds">圈子</a>
+      <a id="ai" href="https://www.zhihu.com/project-square">AI Works</a>
+      <a id="story" href="https://www.zhihu.com/fiore/h5/vip-web">故事</a>
+      <a id="ai-relative" href="/project-square">AI Works</a>
+      <a id="story-relative" href="/fiore/h5/vip-web">故事</a>
+    </nav>
+    <div id="search-outer" class="css-x84wzl">
+      <div id="search" class="SearchBar css-v0eidh">
+        <form id="search-form" class="SearchBar-tool">
+          <div><div class="Popover"><label id="search-label" class="SearchBar-input"><input aria-label="搜索"></label></div></div>
+        </form>
+        <a id="zhida" class="css-so42cc">直答</a>
+        <button id="plus">+</button>
+      </div>
+    </div>
+  </div>
+</header>
+<div id="post" class="Post-content">
+  <div id="layout" class="css-kjzwqj">
+    <div id="main-outer" class="css-c0fani">
+      <div id="card" class="css-yq5nsh">
+        <article id="article" class="Post-Main Post-NormalMain">
+          <h1>离线测试文章</h1>
+          <div id="author" class="Post-Author">文首作者</div>
+          <section id="local-zhihu-author-extra">脚本补充作者统计</section>
+          <div id="rich-container" class="Post-RichTextContainer">
+            <div id="rich-inner" class="css-1od93p9"><div id="rich-text" class="RichText Post-RichText"><p>测试正文及图文区域。</p></div></div>
+          </div>
+          <div id="catalog-outer" class="css-1kerlqf"><div class="css-72d564"><div id="catalog-sticky" class="css-lcgmxk"><div class="Catalog">目录</div></div></div>
+          <div class="ContentItem-actions">
+            <button id="vote">赞同</button>
+            <button id="explain" data-tooltip="解释这篇内容">解释</button>
+            <button id="save" aria-label="收藏">收藏</button>
+          </div>
+        </article>
+      </div>
+    </div>
+    <div id="sidebar" class="css-1ni4jcm"><div class="css-18888ld"><div id="side-author" class="AuthorCard">侧栏作者数据</div><div class="HotSearchCard">热榜</div></div></div>
+  </div>
+</div>
+<div class="ContentItem-actions"><button id="answer-explain" data-tooltip="解释这篇内容">问答解释</button></div>
+<div id="kanshan" class="CornerButtons--kanshan"><button class="KanshanCornerButton">看山</button></div>
+<button id="back-top">返回顶部</button>
+</html>

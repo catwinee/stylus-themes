@@ -1,0 +1,46 @@
+/* 全站：导航、搜索与辅助入口（zhihu.com 及其子域名） */
+
+/* 1. 精简导航：按链接匹配，不隐藏共用 class 的其他导航项。 */
+.AppHeader nav a[href="https://www.zhihu.com/project-square"],
+.AppHeader nav a[href="/project-square"],
+.AppHeader nav a[href="https://www.zhihu.com/fiore/h5/vip-web"],
+.AppHeader nav a[href="/fiore/h5/vip-web"] {
+    display: none !important;
+}
+
+/* 2. 隐藏直答、看山及内容解释入口，保留 +、返回顶部和正常操作。 */
+.AppHeader .SearchBar > a.css-so42cc,
+.CornerButtons--kanshan,
+.CornerAnimayedFlex--kanshan,
+.KanshanCornerButton,
+.ContentItem-actions button[data-tooltip="解释这篇内容"] {
+    display: none !important;
+}
+
+/* 3. 输入框填满搜索区域，解除网站的 365px 限宽和靠右对齐。 */
+.AppHeader .SearchBar-input {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin-inline: 0 !important;
+    box-sizing: border-box !important;
+}
+
+/* 4. 搜索区域内的按钮间距；外边距归零，取代早期失效的 margin 补丁。 */
+.AppHeader .SearchBar {
+    margin-inline-end: 0 !important;
+    min-width: 0 !important;
+    column-gap: 16px !important;
+}
+
+/* 搜索区左侧与导航分隔线保持间距；此 class 来自已验收的页面结构。 */
+.AppHeader .css-x84wzl {
+    padding-inline-start: 16px !important;
+    min-width: 0 !important;
+    column-gap: 16px !important;
+    box-sizing: border-box !important;
+}
+
+.AppHeader .SearchBar-tool {
+    min-width: 0 !important;
+}

@@ -1,0 +1,113 @@
+@-moz-document domain("zhihu.com") {
+    /* 全站：导航、搜索与辅助入口（zhihu.com 及其子域名） */
+
+    /* 1. 精简导航：按链接匹配，不隐藏共用 class 的其他导航项。 */
+    .AppHeader nav a[href="https://www.zhihu.com/project-square"],
+    .AppHeader nav a[href="/project-square"],
+    .AppHeader nav a[href="https://www.zhihu.com/fiore/h5/vip-web"],
+    .AppHeader nav a[href="/fiore/h5/vip-web"] {
+        display: none !important;
+    }
+
+    /* 2. 隐藏直答、看山及内容解释入口，保留 +、返回顶部和正常操作。 */
+    .AppHeader .SearchBar > a.css-so42cc,
+    .CornerButtons--kanshan,
+    .CornerAnimayedFlex--kanshan,
+    .KanshanCornerButton,
+    .ContentItem-actions button[data-tooltip="解释这篇内容"] {
+        display: none !important;
+    }
+
+    /* 3. 输入框填满搜索区域，解除网站的 365px 限宽和靠右对齐。 */
+    .AppHeader .SearchBar-input {
+        width: 100% !important;
+        max-width: none !important;
+        min-width: 0 !important;
+        margin-inline: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 4. 搜索区域内的按钮间距；外边距归零，取代早期失效的 margin 补丁。 */
+    .AppHeader .SearchBar {
+        margin-inline-end: 0 !important;
+        min-width: 0 !important;
+        column-gap: 16px !important;
+    }
+
+    /* 搜索区左侧与导航分隔线保持间距；此 class 来自已验收的页面结构。 */
+    .AppHeader .css-x84wzl {
+        padding-inline-start: 16px !important;
+        min-width: 0 !important;
+        column-gap: 16px !important;
+        box-sizing: border-box !important;
+    }
+
+    .AppHeader .SearchBar-tool {
+        min-width: 0 !important;
+    }
+}
+
+@-moz-document domain("zhuanlan.zhihu.com") {
+    /* 专栏：单栏阅读布局（仅 zhuanlan.zhihu.com；叠加全站分区） */
+
+    /* 1. 阅读区域最大总宽度，包含网站原有间距及下方设置的正文内边距。
+     * 这是最终验收值；已移除被覆盖的 1000px / 1100px 历史补丁。
+     */
+    .Post-content {
+        --reading-width: 1200px;
+    }
+
+    /* 2. 双栏改为单栏，整体居中。保留窗口两侧至少合计 32px 的空间。 */
+    .Post-content .css-kjzwqj {
+        display: block !important;
+        width: calc(100% - 32px) !important;
+        max-width: var(--reading-width) !important;
+        min-width: 0 !important;
+        margin-inline: auto !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 隐藏右侧整列：作者卡、热榜。
+     * 原始节点仍在 DOM 中，供现有 Tampermonkey 作者补充信息脚本读取。
+     * 标题下方的 .Post-Author 不受影响。
+     */
+    .Post-content .css-kjzwqj > .css-1ni4jcm {
+        display: none !important;
+    }
+
+    /* 3. 解除正文外层和内层容器的固定宽度，不修改原有纵向间距。 */
+    .Post-content .css-kjzwqj > .css-c0fani,
+    .Post-content .css-kjzwqj > .css-c0fani > .css-yq5nsh,
+    .Post-content .Post-Main,
+    .Post-content .Post-RichTextContainer,
+    .Post-content .Post-RichTextContainer > .css-1od93p9,
+    .Post-content .Post-RichText {
+        width: 100% !important;
+        max-width: none !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    .Post-content .Post-Main {
+        margin-inline: auto !important;
+    }
+
+    /* 4. 白色阅读卡片：响应式内边距和轻阴影。
+     * 不设置 overflow:hidden，避免裁掉目录并破坏 sticky 行为。
+     * 阴影是之前采用的近似值，不是从问答页精确提取的值。
+     */
+    .Post-content .css-kjzwqj > .css-c0fani > .css-yq5nsh {
+        padding-inline: clamp(24px, 5vw, 64px) !important;
+        box-shadow: 0 1px 6px rgba(18, 18, 18, 0.10) !important;
+    }
+
+    /* 5. 目录入口移到正文左侧：76px 宽 + 16px 间距。
+     * 只调整外层横向定位，保留内部 sticky 和展开逻辑。
+     * 此处沿用已验收的宽屏布局；窄窗口仍需人工检查目录是否越界。
+     */
+    .Post-content .css-1kerlqf:has(.Catalog) {
+        left: -92px !important;
+        right: auto !important;
+        width: 76px !important;
+    }
+}

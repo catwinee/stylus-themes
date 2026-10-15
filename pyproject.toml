@@ -1,0 +1,15 @@
+[project]
+name = "zhihu-reading"
+version = "1.0.0"
+description = "个人知乎 Stylus 样式：全站界面与专栏阅读布局"
+requires-python = ">=3.11"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "tinycss2>=1.4,<2",
+    "playwright>=1.50,<2",
+]
+
+[tool.uv]
+package = false
