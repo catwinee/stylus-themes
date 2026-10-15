@@ -47,10 +47,11 @@ class StructureTests(unittest.TestCase):
         style = CURRENT[0]
         self.assertEqual(set(style), {"name", "enabled", "sections"})
         self.assertTrue(style["enabled"])
-        self.assertEqual(len(style["sections"]), 3)
+        self.assertEqual(len(style["sections"]), 4)
         self.assertEqual([s["domains"] for s in style["sections"][:2]],
                          [["zhihu.com"], ["zhuanlan.zhihu.com"]])
-        self.assertEqual(set(style["sections"][2]), {"code", "regexps"})
+        for section in style["sections"][2:]:
+            self.assertEqual(set(section), {"code", "regexps"})
         self.assertFalse(css_for(CURRENT, "example.com"))
         self.assertFalse(css_for(CURRENT, "notzhihu.com"))
         self.assertNotIn("--reading-width", css_for(CURRENT, "www.zhihu.com"))
@@ -71,6 +72,20 @@ class StructureTests(unittest.TestCase):
             "https://www.zhihu.com.evil.example/", "https://www.zhihu.com//",
         ):
             self.assertFalse(applies(section, url), url)
+
+    def test_question_scope(self):
+        section = CURRENT[0]["sections"][3]
+        for path in ("/question/123", "/question/123/answer/456"):
+            for suffix in ("", "/", "?sort=updated", "#answer", "/?sort=updated#answer"):
+                self.assertTrue(applies(section, "https://www.zhihu.com" + path + suffix))
+        for address in (
+            "https://www.zhihu.com/", "https://www.zhihu.com/hot",
+            "https://www.zhihu.com/question/123/log", "https://www.zhihu.com/question/123/followers",
+            "https://www.zhihu.com/question/not-an-id", "https://www.zhihu.com/question/123/answer/",
+            "https://www.zhihu.com/question/123/answer/456/extra", "https://www.zhihu.com/search?q=question",
+            "https://zhuanlan.zhihu.com/p/123", "https://www.zhihu.com.evil.example/question/123",
+        ):
+            self.assertFalse(applies(section, address), address)
 
     def test_css_syntax_and_no_duplicate_declarations(self):
         for section in (s for style in BUNDLE for s in style["sections"]):
@@ -196,7 +211,7 @@ class FirefoxRegressionTests(unittest.TestCase):
                     for key in ("composer", "ask", "expand", "feed-vote", "unknown-sidebar"):
                         self.assertNotEqual(s[key]["display"], "none", key)
                     self.assertEqual(s["unknown-layout"]["display"], "flex")
-                    # 不再用最小高度或留白制造空卡片；更多正文需另查摘要 DOM。
+                    # 保留短摘要，不再通过最小高度或额外留白制造空卡片。
                     self.assertEqual(s["feed-item"]["min-height"], "0px")
                     self.assertEqual(s["feed-item"]["padding-top"], "0px")
                     self.assertEqual(s["feed-item"]["padding-bottom"], "0px")
@@ -232,11 +247,59 @@ class FirefoxRegressionTests(unittest.TestCase):
             context.close()
 
     def test_home_rules_do_not_leak_to_other_routes(self):
-        old_only = [{**CURRENT[0], "sections": CURRENT[0]["sections"][:2]}]
+        old_only = [{**CURRENT[0], "sections": CURRENT[0]["sections"][:2] + CURRENT[0]["sections"][3:]}]
         for url in ("https://www.zhihu.com/question/123", "https://www.zhihu.com/people/test",
                     "https://www.zhihu.com/search?q=test", "https://zhuanlan.zhihu.com/p/123"):
             self.assertEqual(self.snapshot(CURRENT, url, 1339, "home-fixture.html"),
                              self.snapshot(old_only, url, 1339, "home-fixture.html"))
+
+    def test_question_layout_and_answer_padding(self):
+        without_question = [{**CURRENT[0], "sections": CURRENT[0]["sections"][:3]}]
+        for path in ("/question/123", "/question/123/answer/456"):
+            for width in (1339, 1000, 720, 390):
+                with self.subTest(path=path, width=width):
+                    address = "https://www.zhihu.com" + path
+                    s = self.snapshot(CURRENT, address, width, "question-fixture.html")
+                    self.assertEqual(s["question-sidebar"]["display"], "none")
+                    self.assertEqual(s["question-layout"]["display"], "block")
+                    x, _, actual_width, _ = s["question-layout"]["rect"]
+                    self.assertAlmostEqual(actual_width, min(1200, width - 32), delta=0.02)
+                    self.assertAlmostEqual(x, (width - actual_width) / 2, delta=0.02)
+                    self.assertAlmostEqual(s["answer-column"]["rect"][2], actual_width - 32, delta=0.02)
+                    self.assertAlmostEqual(float(s["answer-list-item"]["padding-left"].removesuffix("px")),
+                                           max(24, min(width * .04, 56)), delta=0.02)
+                    self.assertEqual(s["answer-list-item"]["padding-top"], "20px")
+                    self.assertEqual(s["answer-list-item"]["min-height"], "0px")
+                    self.assertEqual(s["comment-item"]["padding-left"], "8px")
+                    self.assertEqual(s["other-list-item"]["padding-left"], "20px")
+                    self.assertEqual(s["answer-actions"]["position"], "sticky")
+                    self.assertEqual(s["question-unknown-layout"]["display"], "flex")
+                    for key in ("answer-author", "answer-count", "answer-vote", "answer-save", "answer-collapse"):
+                        self.assertNotEqual(s[key]["display"], "none", key)
+                    old = self.snapshot(without_question, address, width, "question-fixture.html")
+                    for key in ("question-header", "follow-question", "write-answer"):
+                        self.assertEqual(s[key], old[key], key)
+
+    def test_question_rules_do_not_leak(self):
+        without_question = [{**CURRENT[0], "sections": CURRENT[0]["sections"][:3]}]
+        for address in ("https://www.zhihu.com/", "https://www.zhihu.com/follow",
+                        "https://www.zhihu.com/people/test", "https://www.zhihu.com/search?q=test",
+                        "https://www.zhihu.com/question/123/log", "https://zhuanlan.zhihu.com/p/123"):
+            self.assertEqual(self.snapshot(CURRENT, address, 1339, "question-fixture.html"),
+                             self.snapshot(without_question, address, 1339, "question-fixture.html"))
+
+    def test_question_regexp_works_in_javascript(self):
+        page = self.browser.new_page()
+        try:
+            pattern = CURRENT[0]["sections"][3]["regexps"][0]
+            urls = ["https://www.zhihu.com" + p for p in
+                    ("/question/123", "/question/123/answer/456/?x=1#top", "/question/123#top",
+                     "/", "/question/123/log", "/question/not-an-id", "/question/123/answer/456/extra")]
+            result = page.evaluate("([pattern, urls]) => urls.map(url => new RegExp(pattern).test(url))",
+                                   [pattern, urls])
+            self.assertEqual(result, [True] * 3 + [False] * 4)
+        finally:
+            page.close()
 
     def test_home_regexp_works_in_javascript(self):
         page = self.browser.new_page()

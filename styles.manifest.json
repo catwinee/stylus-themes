@@ -15,6 +15,10 @@
       {
         "source": "src/zhihu/home.css",
         "regexps": ["^https://www[.]zhihu[.]com/(?:follow/?|hot/?|ring-feeds/?|column-square/?)?(?:[?#].*)?$"]
+      },
+      {
+        "source": "src/zhihu/question.css",
+        "regexps": ["^https://www[.]zhihu[.]com/question/[0-9]+(?:/answer/[0-9]+)?/?(?:[?#].*)?$"]
       }
     ]
   }
