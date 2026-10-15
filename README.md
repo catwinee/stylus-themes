@@ -4,6 +4,8 @@
 
 仓库路径：`/home/Catwine/Workspace/stylus-themes`。原 `zhihu-reading` → `stylus` 仓库已整体改名，Git 历史保留。
 
+远端 `origin`：`https://github.com/catwinee/stylus-themes.git`。已配置地址；配置远端不代表已推送。
+
 ## 唯一的导入文件
 
 ```text
@@ -96,10 +98,12 @@ pyproject.toml / uv.lock        测试依赖
 - URL 只匹配数字 ID 的问题页及单条回答页，允许尾斜杠、query 和 hash，不覆盖问题日志、关注者等子页面。
 - 依据用户提供的 `.QuestionPage .css-1gl8cva` 双栏容器，将外层加宽到最多 1200 CSS px 并居中，保留原有左右 16px padding。
 - 隐藏直接子节点 `.Question-sideColumn` 整列，包含广告、相关问题和其他右栏内容。
-- 左侧 `.css-6b8m40` 从原 694px 放宽为 100%。
+- 左侧 `.css-6b8m40` 及其直接子节点 `.Question-mainColumn` 都放宽为 100%。仅改外层会遗留内层 694px 限宽，之前未居中的问题即由此导致。
 - 回答列表的 `.List-item:has(> div > .AnswerItem)` 左右留白为 `clamp(24px, 4vw, 56px)`，不改原生纵向高度、阴影、展开/收起、作者和操作栏。
 - 评论列表和非回答 List-item 不增加留白。
-- **尚未收到问题标题/描述区域的 DOM，因此这版不修改标题区。** 若与回答区未对齐，后续按实际结构单独调整。
+- 标题区 `.QuestionHeader-content` 清除原有固定左偏移，采用与回答区相同的 1200px 居中框；横向 padding 为回答外框 16px 加正文留白。
+- `.QuestionHeader-main` 解除 694px 限宽及左侧 20px padding，让标题与回答正文左边缘对齐。标题旁统计区保留，空间不足时允许换行。
+- 标题之外若还有独立的问题操作栏，尚无其 DOM，本次不猜测修改。
 - 单条回答页已纳入 URL 范围，但只有问题页容器结构已确认；不同结构需要进一步适配。
 
 ### 已知限制
@@ -118,7 +122,7 @@ uv run python -m unittest discover -s tests -v
 
 构建只用 Python 标准库，输出可重复、不携带构建时间戳。测试需要 Playwright Firefox；优先使用匹配版本，否则尝试已有缓存。可以通过 `PLAYWRIGHT_FIREFOX_EXECUTABLE` 指定，缺少或不兼容时运行 `uv run playwright install firefox`。
 
-测试使用全新临时浏览器上下文和离线夹具，不读取日常 Firefox 的配置/Cookie，不访问真实知乎页面。验证构建一致性、多站点输出、名称唯一性、作用范围、CSS 语法、既有全站/专栏回归、列表布局和新增问答布局。
+测试使用全新临时浏览器上下文和离线夹具，不读取日常 Firefox 的配置/Cookie，不访问真实知乎页面。验证构建一致性、多站点输出、名称唯一性、作用范围、CSS 语法、既有全站/专栏回归、列表布局和新增问答布局。问答夹具已加入真实的内层 `Question-mainColumn` 及答案卡片祖先链，验证实际卡片居中、标题文字对齐，并模拟缺失内层规则以确保能捕获之前的偏左问题。
 
 离线列表夹具在五条路径和多个宽度下运行，**不能替代其他四页的真实结构验证或扩展导入验收**。
 
@@ -132,5 +136,5 @@ uv run python -m unittest discover -s tests -v
 - [ ] 分别检查关注、热榜、圈子和专栏广场，记录哪些还需要结构适配。
 - [ ] 问答/详情页不受列表页规则影响。
 - [ ] 问题页右栏全部消失，回答区加宽居中，回答左右留白舒适。
-- [ ] 回答评论、收藏、赞同、展开/收起及作者信息正常；问题标题/描述区保持原生布局。
+- [ ] 回答评论、收藏、赞同、展开/收起及作者信息正常；标题与回答正文左边缘对齐，标题旁统计信息正常。
 - [ ] 单条回答页分别检查是否共用结构；若不生效，提供实际 DOM 后补充。

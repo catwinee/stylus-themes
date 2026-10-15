@@ -266,9 +266,14 @@ class FirefoxRegressionTests(unittest.TestCase):
                     self.assertAlmostEqual(actual_width, min(1200, width - 32), delta=0.02)
                     self.assertAlmostEqual(x, (width - actual_width) / 2, delta=0.02)
                     self.assertAlmostEqual(s["answer-column"]["rect"][2], actual_width - 32, delta=0.02)
+                    # 不只检查外层：实际白色卡片与内部主栏必须一起撑开并居中。
+                    for key in ("answer-inner-column", "answer-card", "answer-list-item"):
+                        rect = s[key]["rect"]
+                        self.assertAlmostEqual(rect[2], actual_width - 32, delta=0.02, msg=key)
+                        self.assertAlmostEqual(rect[0] + rect[2] / 2, width / 2, delta=0.02, msg=key)
                     self.assertAlmostEqual(float(s["answer-list-item"]["padding-left"].removesuffix("px")),
                                            max(24, min(width * .04, 56)), delta=0.02)
-                    self.assertEqual(s["answer-list-item"]["padding-top"], "20px")
+                    self.assertEqual(s["answer-list-item"]["padding-top"], "16px")
                     self.assertEqual(s["answer-list-item"]["min-height"], "0px")
                     self.assertEqual(s["comment-item"]["padding-left"], "8px")
                     self.assertEqual(s["other-list-item"]["padding-left"], "20px")
@@ -276,9 +281,30 @@ class FirefoxRegressionTests(unittest.TestCase):
                     self.assertEqual(s["question-unknown-layout"]["display"], "flex")
                     for key in ("answer-author", "answer-count", "answer-vote", "answer-save", "answer-collapse"):
                         self.assertNotEqual(s[key]["display"], "none", key)
+                    header = s["question-header"]["rect"]
+                    self.assertAlmostEqual(header[0], x, delta=0.02)
+                    self.assertAlmostEqual(header[2], actual_width, delta=0.02)
+                    self.assertAlmostEqual(s["question-title"]["rect"][0],
+                                           s["answer-item"]["rect"][0], delta=0.05)
+                    for key in ("follow-question", "write-answer", "question-stats"):
+                        self.assertNotEqual(s[key]["display"], "none", key)
                     old = self.snapshot(without_question, address, width, "question-fixture.html")
-                    for key in ("question-header", "follow-question", "write-answer"):
-                        self.assertEqual(s[key], old[key], key)
+                    self.assertEqual(old["answer-inner-column"]["rect"][2], 694)
+
+    def test_fixture_catches_previous_inner_column_width_bug(self):
+        # 模拟之前遗漏 Question-mainColumn 的规则，证明新夹具确实能复现故障。
+        sections = [dict(section) for section in CURRENT[0]["sections"]]
+        pair = (".QuestionPage .css-1gl8cva > .css-6b8m40,\n"
+                ".QuestionPage .css-1gl8cva > .css-6b8m40 > .Question-mainColumn {")
+        self.assertIn(pair, sections[3]["code"])
+        sections[3]["code"] = sections[3]["code"].replace(pair,
+            ".QuestionPage .css-1gl8cva > .css-6b8m40 {")
+        broken = [{**CURRENT[0], "sections": sections}]
+        s = self.snapshot(broken, "https://www.zhihu.com/question/123", 1339, "question-fixture.html")
+        self.assertEqual(s["answer-column"]["rect"][2], 1168)
+        self.assertEqual(s["answer-card"]["rect"][2], 694)
+        x, _, width, _ = s["answer-card"]["rect"]
+        self.assertGreater(abs(x + width / 2 - 1339 / 2), 200)
 
     def test_question_rules_do_not_leak(self):
         without_question = [{**CURRENT[0], "sections": CURRENT[0]["sections"][:3]}]

@@ -5,31 +5,54 @@
 <style>
   body { margin: 0; background: #f5f6fa; }
   .css-1gl8cva { display: flex; width: 1032px; margin: 10px auto; padding: 0 16px; gap: 10px; box-sizing: border-box; }
-  .css-6b8m40 { width: 694px; flex-shrink: 0; }
+  .css-6b8m40 { width: 694px; flex-shrink: 0; padding-bottom: 20px; }
+  .Question-mainColumn { width: 694px; padding-bottom: 20px; }
+  .QuestionAnswers-answers { margin-bottom: 10px; }
   .Question-sideColumn { width: 296px; max-width: 296px; flex-shrink: 0; }
   .Card { background: white; box-shadow: 0 1px 3px #1212121a; }
-  .List-item { padding: 20px; border-bottom: 1px solid #eee; }
+  .List-item { padding: 16px 20px; border-bottom: 1px solid #eee; }
   .comment .List-item { padding: 8px; }
   .test-sticky { position: sticky; bottom: 0; }
+  .QuestionHeader { padding: 16px 0; background: white; }
+  .QuestionHeader-content { display: flex; max-width: calc(100% - 169.367px); padding-left: 169.367px; }
+  .QuestionHeader-main { flex: 0 0 auto; width: 694px; padding-left: 20px; box-sizing: border-box; }
+  .QuestionHeader-title { margin: 12px 0 3px; }
+  .test-stats { flex: 0 1 260px; min-width: 0; }
 </style>
 <main class="App-main">
   <div><div class="QuestionPage css-0">
-    <!-- 仅用于确认不干扰标题区，不声称此标签/class 是真实问题标题结构。 -->
-    <section id="question-header"><h1>问题标题</h1><p>问题描述</p><button id="follow-question">关注问题</button><button id="write-answer">写回答</button></section>
+    <div><div><div class="QuestionHeader">
+      <div id="question-header" class="QuestionHeader-content">
+        <div id="question-header-main" class="QuestionHeader-main">
+          <h1 id="question-title" class="QuestionHeader-title">问题标题：正文加宽后的阅读体验</h1>
+          <p>问题描述</p>
+          <button id="follow-question">关注问题</button><button id="write-answer">写回答</button>
+        </div>
+        <!-- 统计兄弟节点内部尚无真实 DOM，此处仅验证保留兄弟节点及换行能力。 -->
+        <div id="question-stats" class="test-stats">关注者 1,033　被浏览 1,018,503</div>
+      </div>
+    </div></div></div>
     <div id="question-layout" class="css-1gl8cva">
       <div id="answer-column" class="css-6b8m40">
-        <div class="Card">
-          <h2 id="answer-count">69 个回答</h2>
-          <div id="answer-list-item" class="List-item" tabindex="0"><div>
-            <div id="answer-item" class="ContentItem AnswerItem">
-              <div id="answer-author" class="AuthorInfo">作者信息</div>
-              <div class="RichContent"><div class="RichContent-inner"><p>回答正文保留原生排版。</p></div></div>
-              <div class="ContentItem-actions test-sticky" id="answer-actions"><button id="answer-vote">赞同</button><button id="answer-save">收藏</button><button id="answer-collapse">收起</button></div>
-              <div class="comment"><div id="comment-item" class="List-item">评论，不能被回答留白规则误伤。</div></div>
+        <!-- 内层 694px 限宽及以下祖先链来自第二次真实 DOM 采集。 -->
+        <div id="answer-inner-column" class="Question-mainColumn css-vurnku"><div>
+          <div class="QuestionAnswers-answers">
+            <div id="answer-card" class="Card AnswersNavWrapper">
+              <h2 id="answer-count">69 个回答</h2>
+              <div class="ListShortcut"><div class="List"><div><div class="css-0">
+                <div id="answer-list-item" class="List-item" tabindex="0"><div>
+                  <div id="answer-item" class="ContentItem AnswerItem">
+                    <div id="answer-author" class="AuthorInfo">作者信息</div>
+                    <div class="RichContent"><div class="RichContent-inner"><p>回答正文保留原生排版。</p></div></div>
+                    <div class="ContentItem-actions test-sticky" id="answer-actions"><button id="answer-vote">赞同</button><button id="answer-save">收藏</button><button id="answer-collapse">收起</button></div>
+                    <div class="comment"><div id="comment-item" class="List-item">评论，不能被回答留白规则误伤。</div></div>
+                  </div>
+                </div></div>
+                <div id="other-list-item" class="List-item">其他类型的列表项</div>
+              </div></div></div></div>
             </div>
-          </div></div>
-          <div id="other-list-item" class="List-item">其他类型的列表项</div>
-        </div>
+          </div>
+        </div></div>
       </div>
       <div id="question-sidebar" class="Question-sideColumn Question-sideColumn--sticky css-bkewaf">
         <a class="css-1qnu4lg"></a><div></div><div class="css-18888ld"><div class="Card">广告</div><div class="Card css-oyqdpg"><div class="Card-header SimilarQuestions-title"><div class="Card-headerText">相关问题</div></div></div></div>
