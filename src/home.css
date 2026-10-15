@@ -1,0 +1,38 @@
+/* 列表页：推荐、关注、热榜、圈子、专栏广场。
+ * 构建时用 URL 正则限定五条入口路径，不覆盖问答、个人主页及专栏文章。
+ * 已确认推荐页结构；其余入口仅在使用相同 Topstory 布局时生效，待真实页面验收。
+ */
+
+/* 1. 已确认的双栏容器改为单栏；宽度略小于专栏文章的 1200px。
+ * :has 守卫避免把只有同名外层、没有目标主栏的页面强行改成此布局。
+ */
+.Topstory-container:has(> .Topstory-mainColumn) {
+    display: block !important;
+    width: calc(100% - 32px) !important;
+    max-width: 1100px !important;
+    min-width: 0 !important;
+    margin-inline: auto !important;
+    box-sizing: border-box !important;
+}
+
+/* 2. 隐藏整列，而非逐个隐藏创作中心、热榜、作者平台等卡片。
+ * 不隐藏顶部发布想法/提问等左栏入口，也不操作其他侧栏或后代容器。
+ */
+.Topstory-container:has(> .Topstory-mainColumn) > .css-bkewaf {
+    display: none !important;
+}
+
+/* 3. 信息流填满容器；统一外层留白和轻阴影。
+ * 不猜测卡片内部结构，不修改摘要折叠、加载、交互按钮与 sticky 定位。
+ * 白色底色对应当前已提供的浅色界面，深色主题尚未适配。
+ */
+.Topstory-container > .Topstory-mainColumn {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin-inline: 0 !important;
+    padding-inline: clamp(20px, 3vw, 40px) !important;
+    box-sizing: border-box !important;
+    background-color: #fff !important;
+    box-shadow: 0 1px 6px rgba(18, 18, 18, 0.10) !important;
+}

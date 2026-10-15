@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<title>推荐页布局夹具：仅按已提供的容器结构构造</title>
+<style>
+  body { margin: 0; background: #f5f6fa; }
+  .Topstory-container { display: flex; width: 1032px; margin: 10px auto; gap: 10px; padding: 0 16px; box-sizing: border-box; }
+  .Topstory-mainColumn { width: 694px; flex-shrink: 0; margin-right: 0; }
+  .css-bkewaf { width: 296px; max-width: 296px; flex-shrink: 0; }
+  .Card, .feed-card { background: white; padding: 20px; margin-bottom: 10px; }
+  .feed-card { border-bottom: 1px solid #eee; }
+</style>
+<main>
+  <div id="feed-layout" class="Topstory-container css-1ewlo9z">
+    <div id="feed-main" class="Topstory-mainColumn css-1ukigou">
+      <div id="composer" class="Card">分享此刻的想法 <button id="ask">提问题</button></div>
+      <div class="feed-card"><h2>推荐内容</h2><p>信息流摘要文字。</p><button id="expand">阅读全文</button><button id="feed-vote">赞同</button></div>
+    </div>
+    <div id="feed-sidebar" class="css-bkewaf">
+      <a class="css-1qnu4lg"></a><div></div>
+      <div class="css-18888ld">
+        <div class="css-19idom"><div class="Card CreatorEntrance GlobalSideBar-creator">创作中心</div></div>
+        <div class="HotSearchCard">大家都在搜</div>
+        <div class="Card">作者平台</div>
+      </div>
+    </div>
+  </div>
+  <!-- 不匹配目标结构时，不得仅凭同名外层隐藏旁支。 -->
+  <div id="unknown-layout" class="Topstory-container"><div class="other-main">未知布局</div><div id="unknown-sidebar" class="css-bkewaf">保留</div></div>
+</main>
+</html>
